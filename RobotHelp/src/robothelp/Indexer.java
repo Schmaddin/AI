@@ -1,6 +1,7 @@
-package mi.project.core;
+package robothelp;
 
 import java.io.BufferedWriter;
+
 import java.io.File;
 
 import java.io.FileInputStream;
@@ -18,9 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
-
-import mi.project.core.lucene.NoStemmingAnalyzer;
-import mi.project.core.snlp.SentenceParser;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -43,6 +41,7 @@ import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
 import edu.stanford.nlp.util.CoreMap;
 
+
 public class Indexer {
 	// FIELD NAMES:
 	public static final String COUNTRY = "country";
@@ -51,6 +50,12 @@ public class Indexer {
 	public static final String LENGTH_STORE = "lengthstore";
 	public static final String TOPIC = "topic";
 	public static final String POS = "pos";
+	
+	public static final String ID = "id";
+	public static final String CAPTION ="caption";
+	public static final String KEYS ="keys";
+	public static final String REFS = "ref";
+
 
 	private static final String[] POSTAGS3 = { "PDT", "POS", "PRP", "SYM" };
 
@@ -235,6 +240,60 @@ public class Indexer {
 
 		return countMap;
 	}
+	
+	
+	public void addHelp(List<ContentBlock> content) {
+
+
+		
+		System.out.println("StartIndexing");
+
+		StringField idField = new StringField(ID, "", Field.Store.YES);
+		TextField captionField = new TextField(CAPTION,"" , Field.Store.YES);
+		TextField contentField = new TextField(CONTENT, "", Field.Store.YES);
+		TextField keyField = new TextField(KEYS, "", Field.Store.YES);
+		TextField refsField = new TextField(REFS, "", Field.Store.YES);
+		
+		for (ContentBlock entry : content) {
+			Document doc = new Document();
+
+
+				contentField.setStringValue(entry.getContent());
+				captionField.setStringValue(entry.getCaption());
+				idField.setStringValue(""+entry.getId());
+				doc.add(idField);
+
+				doc.add(captionField);
+				doc.add(contentField);
+				
+				String keys="";
+				for(String key:entry.getKeys())
+				keys=keys+" "+key;
+				keyField.setStringValue(keys);
+				doc.add(keyField);
+				
+
+				String refs="";
+				if(entry.getRef()!=null)
+				{
+				for(int ref:entry.getRef())
+				refs=refs+" "+ref;
+				}
+				refsField.setStringValue(refs);
+				doc.add(refsField);
+
+
+
+				try {
+					writer.addDocument(doc);
+				} catch (IOException e) {
+					System.out.println("catch");
+					e.printStackTrace();
+				}
+
+			} 
+		}
+
 
 	/**
 	 * Saves metainformation of a certain language/category

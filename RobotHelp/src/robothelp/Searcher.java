@@ -1,4 +1,4 @@
-package mi.project.core;
+package robothelp;
 
 import java.io.File;
 
@@ -40,7 +40,6 @@ import org.apache.lucene.store.FSDirectory;
 
 import mi.project.core.datapackages.EvaluationField;
 import mi.project.core.datapackages.Snippet;
-import mi.project.core.lucene.NoStemmingAnalyzer;
 import mi.project.core.syn.RequestSynonymSet;
 import mi.project.core.syn.Syn;
 

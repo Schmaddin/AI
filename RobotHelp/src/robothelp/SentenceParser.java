@@ -1,4 +1,4 @@
-package mi.project.core.snlp;
+package robothelp;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package mi.project.core.lucene;
+package robothelp;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
