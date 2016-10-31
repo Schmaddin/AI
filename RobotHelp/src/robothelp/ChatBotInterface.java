@@ -1,8 +1,15 @@
 package robothelp;
 	import java.io.IOException;
+import java.util.List;
 
 import org.apache.lucene.queryparser.classic.ParseException;
 
+import edu.stanford.nlp.ling.CoreAnnotations.NamedEntityTagAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.PartOfSpeechAnnotation;
+import edu.stanford.nlp.ling.CoreLabel;
+import edu.stanford.nlp.util.CoreMap;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -88,6 +95,7 @@ public class ChatBotInterface extends Application  {
         
         try {
 			conversation+="bot: "+SearchInIndex.search(input.getText())+"</br>";
+			conversation+=taggedSentence(input.getText());
 		} catch (ParseException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -98,5 +106,30 @@ public class ChatBotInterface extends Application  {
         webEngine.loadContent(conversation);
         
 		
+	}
+
+	private String taggedSentence(String text) {
+		List<CoreMap> sentences = SentenceParser.returnSentences(SentenceParser.makeAnnotation(text));
+		
+		String returnString="";
+		
+		for(CoreMap sentence:sentences)
+		{
+			for (CoreLabel token: sentence.get(TokensAnnotation.class)) {
+
+				 String word = token.get(TextAnnotation.class);
+				// // this is the POS tag of the token
+				 String pos = token.get(PartOfSpeechAnnotation.class);
+				// // this is the NER label of the token
+				 String ne = token.get(NamedEntityTagAnnotation.class);
+
+				 returnString+=" <font color=\""+Indexer.getColorFromPosTag(pos)+"\">"+word+"_"+pos+"</font>";
+			}
+			
+			// // this is the text of the token
+		}
+		
+		returnString+="</br></br></br>";
+		return returnString;
 	}
 }
