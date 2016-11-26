@@ -29,6 +29,8 @@ public class ReadHelpFile {
 
 					int id = Integer.parseInt(edit);
 					System.out.println(id);
+
+					currentBlock.setId(id);
 					HelpFile.mainStructure.add(currentBlock);
 				}
 				if (current.startsWith("///keys:")) {

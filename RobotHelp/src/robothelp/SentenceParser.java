@@ -1,11 +1,15 @@
 package robothelp;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
+import edu.stanford.nlp.ling.CoreAnnotations.PartOfSpeechAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.Sentence;
 import edu.stanford.nlp.parser.lexparser.LexicalizedParser;
@@ -74,6 +78,27 @@ public class SentenceParser {
 		return sentences;
 	}
 
+	public static List<String> returnNN(String sentence)
+	{
+		List<String> listOfNN=new LinkedList<String>();
+		
+		List<CoreMap> annoted = returnSentences(makeAnnotation(sentence));
+		
+		for(CoreMap current:annoted)
+		{
+			for (CoreLabel token: current.get(TokensAnnotation.class)) {
+
+				 String word = token.get(TextAnnotation.class);
+				// // this is the POS tag of the token
+				 String pos = token.get(PartOfSpeechAnnotation.class);
+				 
+				 if(pos.startsWith("NN"))
+					 listOfNN.add(word);
+			}
+		}
+		
+		return listOfNN;
+	}
 
 	public static List<Tree> getParseTree(Annotation document) {
 
