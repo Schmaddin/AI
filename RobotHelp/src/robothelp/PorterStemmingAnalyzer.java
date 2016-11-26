@@ -11,12 +11,13 @@ import org.apache.lucene.analysis.standard.StandardTokenizer;
  * Standard Tokenizer and lowerCaseFilter
  * No Stopword Elimination
  */
-public class NoStemmingAnalyzer extends Analyzer {
+public class PorterStemmingAnalyzer extends Analyzer {
 
 	@Override
 	protected TokenStreamComponents createComponents(String fieldName) {
 		Tokenizer source = new StandardTokenizer();
 		TokenStream filter = new LowerCaseFilter(source);
-		return new TokenStreamComponents(source,filter);
+		TokenStream filter2=new PorterStemFilter(filter);
+		return new TokenStreamComponents(source,filter2);
 	}
 }

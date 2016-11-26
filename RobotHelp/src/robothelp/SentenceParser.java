@@ -35,6 +35,7 @@ import edu.stanford.nlp.util.CoreMap;
 public class SentenceParser {
 	private static Properties props;
 	private static StanfordCoreNLP pipeline;
+	
 	static {
 		// creates a StanfordCoreNLP object, with POS tagging, lemmatization,
 		// NER, parsing, and coreference resolution
@@ -43,6 +44,7 @@ public class SentenceParser {
 		// dcoref");
 		props.put("annotators", "tokenize, ssplit, pos, parse");
 		// props.put("parse.model",
+
 		// "edu/stanford/nlp/models/srparser/englishSR.ser.gz");
 		pipeline = new StanfordCoreNLP(props);
 

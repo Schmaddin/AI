@@ -105,7 +105,7 @@ public class Indexer {
 	}
 
 	// analyzer
-	private Analyzer analyzer = new NoStemmingAnalyzer();
+	private Analyzer analyzer = new PorterStemmingAnalyzer();
 
 	// index writer
 	private String indexDir;
