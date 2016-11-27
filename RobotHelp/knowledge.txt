@@ -1,4 +1,4 @@
-/////topic: 1
+﻿/////topic: 1
 ///keys: baggage allowance, items
 ///title: Which items are not considered part of the baggage allowance?
 ///answer: The items not considered part of the baggage allowance are: electronic devices, cash, jewelry or gemstones, negotiable papers, and items that can be considered valuable, mobile phones, laptops, iPods, personal items such as glasses, make up, etc.
@@ -17,7 +17,7 @@
 ///related topic: 1,2,4
 
 /////topic: 4
-///keys: pets, cockpit, flight, animals
+///keys: pets, cockpit, flight, animals, pets
 ///title: Can I carry pets in the airplane cockpit?
 ///answer: You can carry your dog in the cockpit, but only in flights no longer than six hours inside Mexico and from or to USA, Canada, Central and South America. It only applies to domesticated dogs. They will be carried in a pet cage approved for air transportation; it must fit under the seat that faces the passenger and stay there while on board. To know more about terms and conditions, go to aeromexico.com or dial 5133 4000, option 2, or toll free (01800) 0214 000, option 4, and 1-800-237-6639 for the United States to contact our call center.
 ///related topic: 1,2,3,4
@@ -35,7 +35,7 @@
 ///related topic: 5
     
 /////topic: 7
-///keys: unaccompanied minor service, children, 
+///keys: unaccompanied minor service, children
 ///title: How and where can I ask for the unaccompanied minor service?
 ///answer: You can ask for our unaccompanied minor service in our call center, dialing 5133 4000, option 2, or toll free (01800) 0214 000, option 4, and 1-800-237-6639 for the United States.
 ///related topic:
@@ -54,9 +54,100 @@
 ///related topic: 
 
 /////topic: 10
-///keys: special service, oxygen, wheel chari, stretcher
+///keys: special service, oxygen, wheel chair, stretcher, disabled, handy cap
 ///title: Which is the procedure to ask for a special service (oxygen, wheel chair, stretcher)?
 ///answer: You must ask for a special service (oxygen, wheel chair, stretcher) 48 before national flights and 72 hours before international flights. You should visit our Special Services section at www.aeromexico.com or call to our call center, 5133 4000, option 2, or toll free (01800) 0214 000, option 4, and 1-800-237-6639 for the United States.
+
+/////topic: 11
+///keys: musical instrument, luggage, transportation, guitar, violin
+///title: Can I transport musical instruments in the plane
+///answer: Each passenger is allowed one (1) musical instrument on board as a "carry-on" item, so long as they do not exceed the maximum linear surface area (length + width + height) 45 inches, with a fee of $58 USD  ($47 USD pre-sale), subject to space available at the time of boarding. You can exchange at no additional fee, 1 musical instrument instead of 1 carry-on piece or checked bag, so long as they do not exceed the terms of weight and dimensions established.
+///related topic:
+
+/////topic: 12
+///keys: pet, animal, cabin, checked, cargo
+///title: Can my pet fly with me?
+///answer: There are three options to transport your pet with you:</br>In cabin: Bring your pet onboard for travel within Mexico and to/from the USA, Canada, and Central and South America, for a special fee;</br>Checked: Check in your pet to be transported in the cargo hold, if your dog, cat, or chicken weigh less than 100 lb (45 kg), including the weight of the carrier, for a special fee; </br>As cargo: If your pet weighs more than 100 lb (45 kg) including the weight of its carrier, or if you wish to ship another type of animal, please call our Cargo Department toll free at 1 (800) 368-4226 for more information.
+///related topic:
+
+/////topic: 13
+///keys: sport equipment,sports baggage, bycycle, golf, fishing, hunting, diving, surfboards, snowboards, windsurfing, kite surfing, ski
+///title: Can I transport sport equipment?
+///answer: You can transport sport equipment as checked luggage. Fees start from 35 US-Dollars, call our Callcenter for saving money in relation to the airport price. On <a href="https://aeromexico.com/en/travel-with-aeromexico/baggage/special-luggage/sports-baggage/?site=us">this page</a> you find further information.
+///related topic: 
+
+
+/////topic: 14
+///keys: weapons, fire arms, baggage, luggage, guns, fire guns, ARPEL
+///title: Is there a possibility to transport firearms?
+///answer: Generally fire arms are not permitted on flights with connections or international destinations. Weapons need valid documentation, and have to be checked in. Grenades, explosives, firework and military items are generally forbidden.
+///related topic: 
+
+/////topic: 15
+///keys: hand luggage, carry-on bags, weight
+///title: What is the size and weight of the carry-on bag or hand luggage
+///answer: As carry-on luggage you have a small personal item (handbag/briefcase/lap top case/back pack with a maximum weight of 6.6 lbs./3 kg) and a larger bag.</br> The bag can have a linear surface of 115cms / 45” (56 x 36 x 23 cms or 22” x 14” x 9” llength+width+height) and a weight of 22lbs/10kg (Economy) and 40lbs/18kg (Premium)</br>And don't forget: You are allowed to carry small amounts of liquids limited to three ounces (100 ml) in your carry-on bags. These must be packed in one quarter transparent plastic zipper bags (measuring approximately 8” x 8” or 20 x 20 cm), for easy inspection at all airport security checkpoints.
+///related topic: 
+
+/////topic: 16
+///keys: pregnant, pregnancy
+///title: Can I fly pragnant
+///answer: The health status and the secure travel of our passengers is very important for us. If you are pregnant and below 7 months, there is no real issue. But for for women traveling during the third trimester (30-37 weeks or seven months) or with a pregnancy considered high risk, there is a need of a Medical Certificate or permission-to-travel dated within five days prior to flight. And because of the safety of the woman and the baby, Aeromexico does not accept passengers after the 38th week of pregnancy.
+///related topic: 
+
+/////topic: 17
+///keys: parent, baby, infant, children, seat, minimum age
+///title: How can babys, small children travel with aerobus
+///answer: Infants may travel only on their parent's lap or other accompanying adult's lap unless a separate seat has been booked for an infant according to Section 8.3.2 of these Conditions of Carriage, in order to place and fasten the infant car seat to it. One passenger may carry only one infant on his/her lap. It is a complex topic: For further information, inform you at <a href="https://aeromexico.com/en/travel-with-aeromexico/preparing-your-trip/regulations-and-policies/baby-seat/?site=us">our homepage</a> about the exact conditions.
+///related topic: 
+
+/////topic: 18
+///keys: luggage, weight, size, lbs, kg, baggage, bag, how many bags, measurement, check-in
+///title: What is the measurement, weight, size for a check-in baggage or luggage?
+///answer: Aeromexico has different baggage regulations for different destinations and travel packages (like weight, size, number). This <a href="https://aeromexico.com/en/travel-with-aeromexico/baggage/?site=us"> page</a> will give you a fast and good overview in one, two clicks.
+///related topic: 
+
+/////topic: 19
+///keys: luggage lost, baggage lost, report
+///title: I lost my baggage, what can I do?
+///answer: If you can not find your luggage at the destination airport, please report immediatelly to an operater at the airport. With the tracking number, you can search <a href="https://wtrweb.worldtracer.aero/WorldTracerWeb/pax.do?airlineCode=AM">on this page</a> your lost luggage. For further questions call our hotline.
+///related topic: 
+
+/////topic: 20
+///keys: hotline, service, telephone, booking, number, hotline, service, telephone, call
+///title: What is the telephone number of the hotline-service?
+///answer: You have questions, booking request or you need our service? Call our hotline! From the Mexico City metropolitan area call: 5133-4000 from other cities in Mexico call: 0155-5133-4000 (from a landline or 55-5133-4000 from a cellphone). </br> If you're call concerns an already made booking, be sure to have your booking number ready.
+///related topic: 
+
+/////topic: 21
+///keys: unaccompanied minor service, children, age, years, underaged
+///title: For which age is the unaccompanied minor service? At how many years does it start?
+///answer: Unaccompanied minors are defined as all children between 5 years and 13 years 11 months traveling without an adult on direct or connecting flights operated by Aeromexico.</br> U.S. citizens aged between 14 and 21 years are only allowed to fly on the condition that both the parent/guardian and the unaccompanied minor sign the Unaccompanied Minor Form stating that they will follow all procedures and instructions given by Aeromexico personnel.</br>For more information: Ask for our unaccompanied minor service in our call center, dialing 5133 4000, option 2, or toll free (01800) 0214 000, option 4, and 1-800-237-6639 for the United States.
+///related topic: 7
+
+/////topic: 22
+///keys: check-in, web, online, internet
+///title: How does the web check-in works?
+///answer: Online check in up to 48 hours in advance for Mexico Domestic Flights and 24 hours in advance for International Flights, but at least 2 hours before your flight departure time. Web Check-in will provide a boarding pass that you can print or send to an email address to print later. You just need to go <a href="https://aeromexico.com/en/travel-with-aeromexico/check-in/web-check-in/?site=us">on this page</a> and following the online chek-in procedure, with entering departure city and reservation code.
+///related topic: 7
+
+/////topic: 23
+///keys: check-in, web, online, internet, not available
+///title: Is the online check-in for all departure airports available?
+///answer: Online check-in is generally available for all departure airports excluding: Amsterdam, Denver, Havana, Miami, Ontario, San Antonio, San Francisco, Paris or Tokyo. <a href="https://aeromexico.com/en/travel-with-aeromexico/check-in/web-check-in/?site=us">Here</a> you find more information.
+///related topic: 7,22
+
+/////topic: 24
+///keys: check-in, times, when
+///title: When to check-in?
+///answer: The online check-in for domestic mexican flights is available 48h before departure, for international flights 12h. If you just have carry-on luggage, you can be at the Gate 40 Minutes before departure, if you need to check-in baggage, be 90 minutes before departure at our counter in the airport.</br>If you have not checked-in online, be 90 till 120 minutes before departure at the counter for domestic flights, and up to 3 hours for international flights.
+///related topic: 7,22
+
+/////topic: 25
+///keys: check-in, airport, how, automatic counter kiosks
+///title: How to check-in at the airport?
+///answer: You can normally check-in at an Aeromexico check-in counter at the airport. To make check-in processes faster, we have installed automatic counter kiosks on which you can easily check-in with your reservation details and passport or credit card.
+///related topic: 7,22,23,24
 
 */////topic: 
 *///keys:

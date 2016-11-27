@@ -100,7 +100,7 @@ public class ChatBotInterface extends Application {
 				// TODO
 				ConversationBlock conversationBlock = conversationList.get(conversationList.size() - 1);
 				String textAnswer = conversationBlock.nextAnswer().getContent();
-				addRespond("well you don't liked the answer...</br>is this better:</br>" + textAnswer, 0);
+				addRespond("</br>well you don't liked the answer...</br>is this better:</br>" + textAnswer, 0);
 				webEngine.loadContent(conversation);
 			}
 		});
