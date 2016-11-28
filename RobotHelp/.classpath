@@ -16,16 +16,16 @@
 	<classpathentry kind="lib" path="lib/jackson-annotations-2.6.3.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-core-2.6.3.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-databind-2.6.3.jar"/>
-	<classpathentry kind="lib" path="lib/lucene-analyzers-common-6.1.0.jar"/>
-	<classpathentry kind="lib" path="lib/lucene-core-6.1.0.jar"/>
-	<classpathentry kind="lib" path="lib/lucene-highlighter-6.1.0.jar"/>
-	<classpathentry kind="lib" path="lib/lucene-queries-6.1.0.jar"/>
-	<classpathentry kind="lib" path="lib/lucene-queryparser-6.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.7.7.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-simple.jar"/>
 	<classpathentry kind="lib" path="lib/stanford-corenlp-3.6.0-models.jar"/>
 	<classpathentry kind="lib" path="lib/stanford-corenlp-3.6.0.jar"/>
 	<classpathentry kind="lib" path="lib/stanford-postagger-3.6.0.jar"/>
-	<classpathentry kind="lib" path="lib/lucene-memory-6.1.0.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-analyzers-common-6.3.0.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-core-6.3.0.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-highlighter-6.3.0.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-memory-6.3.0.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-queries-6.3.0.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-queryparser-6.3.0.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

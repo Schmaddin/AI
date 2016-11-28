@@ -164,133 +164,19 @@ public class Indexer {
 		writer.close();
 	}
 
+	/**
+	 * Delete old fields and update the new structure
+	 */
 	public void updateDocument() {
-/*
-		TextField feedbackField = new TextField(FEEDBACK, doc.get(Indexer.FEEDBACK) + " " + toAddToQuestions,
-				Field.Store.YES);
-		List<IndexableField> fields = doc.getFields();
-		System.out.println(doc.get(Indexer.CAPTION)+" "+doc.get(Indexer.FEEDBACK) + " " + toAddToQuestions);
-		*/
-		//doc.removeField(Indexer.FEEDBACK);
-		
-	/*	System.out.println("removed!");
-		
-		for(IndexableField current:fields)
-		{
-			if(current.name().equals(Indexer.FEEDBACK))
-			{
-				System.out.println(current.name());
 
-			}
-		}*/
-		//doc.add(feedbackField);
 		try {
-			//writer.updateDoc(new Term(Indexer.CAPTION,doc.get(Indexer.CAPTION)), doc);
-			//writer.updateDocValues(new Term(Indexer.CAPTION,doc.get(Indexer.CAPTION)), feedbackField);
-			//String f[] = { Indexer.ID, Indexer.IDfield,Indexer.CAPTION, Indexer.CONTENT, Indexer.KEYS, Indexer.REFS, Indexer.FEEDBACK };
-			//MultiFieldQueryParser parser = new MultiFieldQueryParser(f, new NoStemmingAnalyzer());
 			writer.deleteAll();
 			addHelp(ReadHelpFile.HelpFile.mainStructure);
-			//writer.deleteDocuments(new Term(Indexer.CAPTION,doc.get(Indexer.CAPTION)));
-			//			writer.deleteDocuments(new Term(Indexer.CAPTION,doc.get(Indexer.CAPTION)));
-			
-/*			this.close();
-			
-			Directory dir = FSDirectory.open(new File(indexDir).toPath());
-
-			IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
-
-			writer = new IndexWriter(dir, iwc);
-			
-			writer.addDocument(doc);*/
-			//writer.updateDocument(doc.get(Indexer.CAPTION), doc);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 	}
 
-	/**
-	 * Index sentences into certain category/country and topic
-	 * 
-	 * @param sentenceList
-	 *            - sentences represented through a list of a CoreMap
-	 * @param country
-	 *            - country or category-Code
-	 * @param topic
-	 *            - topic (not used at the moment)
-	 * @return a Map representing the number of certain sentence-lengths
-	 *         "[5]=20" - 5 sentences with token-length 5
-	 */
-	public Map<Integer, Integer> createAndAddSentenceDoc(List<CoreMap> sentenceList, String country, String topic) {
-
-		Map<Integer, Integer> countMap = new HashMap<Integer, Integer>();
-		// set Value of all sentences (INdex:0)
-		countMap.put(0, sentenceList.size());
-
-		System.out.println("StartIndexing");
-
-		StringField countryField = new StringField(COUNTRY, country.toLowerCase() + "language", Field.Store.YES);
-		StringField topicField = new StringField(TOPIC, topic, Field.Store.YES);
-		TextField contentField = new TextField(CONTENT, "", Field.Store.YES);
-		TextField posField = new TextField(POS, "", Field.Store.YES);
-
-		for (CoreMap sentence : sentenceList) {
-			Document doc = new Document();
-			// only index sentences consisting of more than 2 tokens.
-			if (sentence.get(TokensAnnotation.class).size() > 2) {
-
-				int tokenCount = sentence.get(TokensAnnotation.class).size();
-
-				// checks whether Index is already used: increment
-				if (countMap.containsKey(tokenCount))
-					countMap.put(tokenCount, countMap.get(tokenCount) + 1);
-				// otherwise intitialize
-				else
-					countMap.put(tokenCount, 1);
-
-				contentField.setStringValue(sentence.toString());
-				doc.add(contentField);
-				doc.add(countryField);
-				doc.add(topicField);
-
-				doc.add(new IntPoint(LENGTH, tokenCount));
-				doc.add(new StoredField(LENGTH_STORE, tokenCount));
-
-				/* POS Tagging */
-				String posTaggedSentence = "";
-				for (CoreLabel token : sentence.get(TokensAnnotation.class)) {
-					// this is the text of the token
-					String word = token.get(TextAnnotation.class);
-					// System.out.print("Token: "+word);
-					// this is the POS tag of the token
-					String pos = token.get(PartOfSpeechAnnotation.class);
-
-					posTaggedSentence = posTaggedSentence + word + "_" + pos + " ";
-					// System.out.println(" Pos: "+pos);
-					// this is the NER label of the token
-					// String ne = token.get(NamedEntityTagAnnotation.class);
-				}
-				posField.setStringValue(posTaggedSentence);
-				doc.add(posField);
-				// End POS Tagging
-
-				try {
-					writer.addDocument(doc);
-				} catch (IOException e) {
-					System.out.println("catch");
-					e.printStackTrace();
-				}
-
-			} else {
-				// reduce Number of sentences if, one sentence is not accepted
-				countMap.put(0, countMap.get(0) - 1);
-			}
-		}
-		System.out.println("Neue Sätze indiziert: " + sentenceList.size());
-
-		return countMap;
-	}
 
 	public void addHelp(List<ContentBlock> content) {
 
@@ -299,9 +185,10 @@ public class Indexer {
 		TextField captionField = new TextField(CAPTION, "", Field.Store.YES);
 		TextField contentField = new TextField(CONTENT, "", Field.Store.YES);
 		TextField keyField = new TextField(KEYS, "", Field.Store.YES);
+		keyField.setBoost(0.35f);
 		TextField refsField = new TextField(REFS, "", Field.Store.YES);
 		TextField feedbackField = new TextField(FEEDBACK, " ", Field.Store.YES);
-
+		feedbackField.setBoost(0.35f);
 		for (ContentBlock entry : content) {
 			Document doc = new Document();
 
@@ -484,50 +371,5 @@ public class Indexer {
 		}
 	}
 
-	public static void main(String[] args) {
-
-		Scanner in = new Scanner(System.in);
-		String input = "";
-		while (!input.equals("close")) {
-			input = in.nextLine();
-
-			edu.stanford.nlp.pipeline.Annotation document = SentenceParser.makeAnnotation(input);
-			List<CoreMap> returnMap = SentenceParser.returnSentences(document);
-
-			for (CoreMap current : returnMap) {
-
-				boolean questionMark = false;
-				boolean auxVerbBefore = false;
-				int positionAuxVerb = 150;
-				// https://www.englishclub.com/grammar/verbs-questions_structure.htm
-				if (current.toString().contains("?"))
-					questionMark = true;
-
-				System.out.println("sentence: " + current.toString());
-				System.out.print("TAGS:");
-
-				for (CoreLabel token : current.get(TokensAnnotation.class)) {
-					// this is the text of the token
-					String word = token.get(TextAnnotation.class);
-					String pos = token.get(PartOfSpeechAnnotation.class);
-					System.out.print(word + "_" + pos + "  ");
-
-				}
-
-				List<Tree> tree = SentenceParser.getParseTree(document);
-				for (Tree currentTree : tree) {
-					System.out.print(currentTree.toString() + "  ");
-				}
-
-				auxVerbBefore = SentenceParser.auxVerb(document, current.toString());
-
-				System.out.println("Questionmark: " + questionMark + " (AuxVerb) " + auxVerbBefore);
-
-			}
-
-		}
-
-		in.close();
-	}
 
 }

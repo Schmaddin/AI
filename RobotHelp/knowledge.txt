@@ -17,7 +17,7 @@
 ///related topic: 1,2,4
 
 /////topic: 4
-///keys: pets, cockpit, flight, animals, pets
+///keys: pet, cockpit, flight, animals, pets, dog, with
 ///title: Can I carry pets in the airplane cockpit?
 ///answer: You can carry your dog in the cockpit, but only in flights no longer than six hours inside Mexico and from or to USA, Canada, Central and South America. It only applies to domesticated dogs. They will be carried in a pet cage approved for air transportation; it must fit under the seat that faces the passenger and stay there while on board. To know more about terms and conditions, go to aeromexico.com or dial 5133 4000, option 2, or toll free (01800) 0214 000, option 4, and 1-800-237-6639 for the United States to contact our call center.
 ///related topic: 1,2,3,4

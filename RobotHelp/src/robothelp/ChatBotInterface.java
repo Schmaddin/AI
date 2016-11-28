@@ -37,12 +37,7 @@ import javafx.scene.web.WebView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 
-/**
- * WRB fragewörter? not_RB für verneinung
- * 
- * @author Martin
- *
- */
+
 public class ChatBotInterface extends Application {
 
 	private String conversation = "";
@@ -113,6 +108,8 @@ public class ChatBotInterface extends Application {
 				}
 				
 				SearchInIndex.initialize();
+				
+				botResponse("</br><b>Great I could help you! :-)</b>",100);
 				}
 			}
 		});
@@ -126,7 +123,8 @@ public class ChatBotInterface extends Application {
 				{
 				ConversationBlock conversationBlock = conversationList.get(conversationList.size() - 1);
 				String textAnswer = conversationBlock.nextAnswer().getContent();
-				addRespond("<b><br>well you don't liked the answer...</br>is this better:</br></b>" + textAnswer, 0);
+				botResponse("<b><br>well you don't liked the answer...</br>is this better:</br></b>", 900);
+				botResponse(textAnswer,1400);
 				webEngine.loadContent(conversation);
 				}
 				else
@@ -256,8 +254,11 @@ public class ChatBotInterface extends Application {
 				if (robotLast.contains(current))
 					respondValue += 1.0f;
 			}
-
+			
+			if(nomen.size()+verbs.size()>0)
 			respondValue /= (nomen.size() + verbs.size());
+			else
+			respondValue = 0.0f;
 		}
 
 		if (userName.equals("user")) {
@@ -285,6 +286,19 @@ public class ChatBotInterface extends Application {
 			}
 
 		}
+		
+		
+		if(input.split(" ").length < 3 && respondValue<0.3f && questionMark==false && questionTag ==false && !answered)
+		{
+			if(input.contains("thank"))
+			botResponse("Nice, if I could help you somehow. Anything else?",200);
+			else if(conversationList.size()<3)
+			botResponse("With what can I help?",200);
+			else if(conversationList.size()>3)
+			botResponse("Anything else I can help you with?",200);
+			
+			answered=true;
+		}
 
 		if (developer)
 			addRespond("stopped: " + stopped + "</br>QuestionIndicator:  -TAG: " + questionTag + "   -?: "
@@ -304,11 +318,12 @@ public class ChatBotInterface extends Application {
 				botResponse(textAnswer, 800);
 
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 
-				botResponse("Sorry, I could not find anything about his. What do you mean?", 800);
-
+				if(nomen.size() + verbs.size()<2)
+				botResponse("Sorry, I could not find anything about his. What do you mean? Specify it please!", 800);
+				else
+				botResponse("Hmmm...nothing to find about this topic... </br>maybe try it in other words.",1000);
 			}
 		}
 	}

@@ -36,6 +36,7 @@ public class SentenceParser {
 	private static Properties props;
 	private static StanfordCoreNLP pipeline;
 	
+	// is going to be called in first usage of the static class
 	static {
 		// creates a StanfordCoreNLP object, with POS tagging, lemmatization,
 		// NER, parsing, and coreference resolution
@@ -50,8 +51,13 @@ public class SentenceParser {
 
 	}
 	
-	public static void init() {}
+	public static void init() {} // can be used, to initialize the static initialisation section
 
+	/**
+	 * Annotates a Inputstring with Stanford Annotations
+	 * @param text
+	 * @return Stanford Annotation-format
+	 */
 	public static Annotation makeAnnotation(String text)
 	{
 		// create an empty Annotation just with the given text
@@ -82,6 +88,11 @@ public class SentenceParser {
 		return sentences;
 	}
 
+	/**
+	 * Returns a List containing all Nouns of a sentence
+	 * @param sentence
+	 * @return List of Nouns
+	 */
 	public static List<String> returnNN(String sentence)
 	{
 		List<String> listOfNN=new LinkedList<String>();
@@ -104,6 +115,11 @@ public class SentenceParser {
 		return listOfNN;
 	}
 
+	/**
+	 * NOT USED : for getting a tree representation of a sentence
+	 * @param document
+	 * @return
+	 */
 	public static List<Tree> getParseTree(Annotation document) {
 
 
@@ -130,53 +146,6 @@ public class SentenceParser {
 			forest.add(tree);
 		}
 		return forest;
-	}
-
-	public static boolean auxVerb(Annotation document, String text) {
-
-		SemanticGraph dependencies = document.get(CollapsedCCProcessedDependenciesAnnotation.class);
-		/*
-		 * Set<SemanticGraphEdge> eset = dependencies.getEdgetEdgeSet(); for
-		 * (SemanticGraphEdge e : eset){
-		 * System.out.println(e.getSource()+"_"+e.getTarget()+"_"+e.getRelation(
-		 * )); }
-		 */
-		// }
-
-		LexicalizedParser lp = LexicalizedParser.loadModel("edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz");
-		lp.setOptionFlags(new String[] { "-maxLength", "80", "-retainTmpSubcategories" });
-		List<CoreLabel> rawWords = Sentence.toCoreLabelList(text.split(" "));
-
-		Tree parse = lp.apply(rawWords);
-
-		parse.pennPrint();
-
-		TreebankLanguagePack tlp = new PennTreebankLanguagePack();
-
-		GrammaticalStructureFactory gsf = tlp.grammaticalStructureFactory();
-
-		GrammaticalStructure gs = gsf.newGrammaticalStructure(parse);
-
-		List<TypedDependency> tdl = gs.typedDependenciesCCprocessed();
-
-		System.out.println("dependency: ");
-		int i = 0;
-		for (TypedDependency dep : tdl) {
-			i++;
-			System.out.println(i + " " + dep.reln());
-			if (dep.reln().toString().contains("aux")) {
-				if (dep.gov().index() > dep.dep().index()) {
-					System.out.println("bingo: " + dep.gov().index() + "  " + dep.dep().index());
-					return true;
-				}
-			}
-		}
-
-		TreePrint tp = new TreePrint("penn,typedDependenciesCollapsed");
-
-		tp.printTree(parse);
-
-		return false;
 	}
 
 }
