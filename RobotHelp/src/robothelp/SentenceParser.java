@@ -49,6 +49,8 @@ public class SentenceParser {
 		pipeline = new StanfordCoreNLP(props);
 
 	}
+	
+	public static void init() {}
 
 	public static Annotation makeAnnotation(String text)
 	{

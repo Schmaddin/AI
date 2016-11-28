@@ -1,11 +1,16 @@
 package robothelp;
 
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.util.Version;
@@ -30,6 +35,7 @@ import javafx.stage.Stage;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
 
 /**
  * WRB fragewörter? not_RB für verneinung
@@ -55,7 +61,7 @@ public class ChatBotInterface extends Application {
 
 	private int lastUser = -1;
 	private String helpName = "Aeromexico";
-	private boolean developer = true;
+	private boolean developer = false;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -87,8 +93,27 @@ public class ChatBotInterface extends Application {
 
 			@Override
 			public void handle(ActionEvent event) {
-				System.out.println("Hello World!");
-				// TODO
+
+				if(conversationList.size()>0 && lastUser==0)
+				{
+				ConversationBlock block=conversationList.get(conversationList.size()-1);
+
+				Document doc=SearchInIndex.searchDocument(block.getCurrent().getCaption());
+				System.out.println("current oldquestion: "+block.getCurrent().getId()+" "+block.getCurrent().getOldQuestions());
+				
+				block.getCurrent().setOldQuestions(block.getCurrent().getOldQuestions()+" "+block.getQuestion());
+				SearchInIndex.close();
+				
+				Indexer indexer=new Indexer();
+				indexer.updateDocument();
+				try {
+					indexer.close();
+				} catch (IOException e) {
+
+				}
+				
+				SearchInIndex.initialize();
+				}
 			}
 		});
 
@@ -97,11 +122,17 @@ public class ChatBotInterface extends Application {
 
 			@Override
 			public void handle(ActionEvent event) {
-				// TODO
+				if(conversationList.size()>0 && lastUser==0)
+				{
 				ConversationBlock conversationBlock = conversationList.get(conversationList.size() - 1);
 				String textAnswer = conversationBlock.nextAnswer().getContent();
-				addRespond("</br>well you don't liked the answer...</br>is this better:</br>" + textAnswer, 0);
+				addRespond("<b><br>well you don't liked the answer...</br>is this better:</br></b>" + textAnswer, 0);
 				webEngine.loadContent(conversation);
+				}
+				else
+				{
+					botResponse("So how can I help you?",400);
+				}
 			}
 		});
 
@@ -112,11 +143,18 @@ public class ChatBotInterface extends Application {
 		chatBar.getChildren().addAll(input, sendButton, likeButton, dislikeButton);
 		root.getChildren().addAll(browser, chatBar);
 		primaryStage.setScene(new Scene(root, 300, 250));
+		primaryStage.getIcons().add(new Image("file:logo.jpg"));
 		primaryStage.show();
 
 		ReadHelpFile.readHelp(true);
 		SearchInIndex.initialize();
 
+		Path currentRelativePath = Paths.get("");
+		String s = currentRelativePath.toAbsolutePath().toString();
+
+		char replaceA = '\\';
+		char replaceB = '/';
+		s = s.replace(replaceA, replaceB);
 		StringBuilder html = new StringBuilder().append("<html>");
 		html.append("<head>");
 		html.append("   <script language=\"javascript\" type=\"text/javascript\">");
@@ -125,10 +163,10 @@ public class ChatBotInterface extends Application {
 		html.append("       }");
 		html.append("   </script>");
 		html.append("</head>");
-		html.append("<body onload='toBottom()'>");
+		html.append("<body onload='toBottom()'>" + "<img src=\"file:///" + s + "/logo.jpg\">");
 
 		conversation += html.toString();
-
+		System.out.println(s + "/logo.jpg");
 		addRespond(
 				"Welcome at the FAQ Bot of " + helpName
 						+ "</br> Our Chatbot will help you with answering your questions.</br> Please give Feedback in \"Liking\" or \"Disliking\" the answer!",
@@ -136,6 +174,7 @@ public class ChatBotInterface extends Application {
 
 		addRespond("Hello Iam your chatbot,</br> I hope I can help you, what is your name?", 0);
 
+		SentenceParser.init();
 	}
 
 	private void inputAction() {
@@ -151,22 +190,21 @@ public class ChatBotInterface extends Application {
 
 	private void processInput(String input) {
 
-		String stopped="";
+		String stopped = "";
 		try {
-			stopped=SearchInIndex.removeStopWords(input);
+			stopped = SearchInIndex.removeStopWords(input);
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+
 		if (developer == true)
 			addRespond(collorTaggedSentence(input), 2);
 
-		boolean answered=false;
-		
+		boolean answered = false;
+
 		List<String> nomen = new LinkedList<>();
 		List<String> verbs = new LinkedList<>();
-		List<String> names = new LinkedList<>();
 
 		List<CoreMap> sentences = SentenceParser.returnSentences(SentenceParser.makeAnnotation(input));
 
@@ -182,8 +220,6 @@ public class ChatBotInterface extends Application {
 				String word = token.get(TextAnnotation.class);
 				// // this is the POS tag of the token
 				String pos = token.get(PartOfSpeechAnnotation.class);
-				// // this is the NER label of the token
-				String ne = token.get(NamedEntityTagAnnotation.class);
 
 				if (pos.equals("WRB"))
 					questionTag = true;
@@ -223,80 +259,74 @@ public class ChatBotInterface extends Application {
 
 			respondValue /= (nomen.size() + verbs.size());
 		}
-		
-		
-		if(userName.equals("user"))
-		{
-			
-			
-			if(input.toLowerCase().contains("my name is"))
-			{
-				String ana=input.substring(input.toLowerCase().indexOf("my name is ")+11);
-				String splitString[]=ana.split(" ");
-				
-				
-				answered=setName(nomen, splitString);
-			}
-			else if(input.toLowerCase().contains("iam"))
-			{
-				String ana=input.substring(input.toLowerCase().indexOf("iam ")+4);
-				String splitString[]=ana.split(" ");
-				
-				
-				answered=setName(nomen, splitString);
-			}
-			else if(robot.size()>0)
-			{
-				if(robot.get(robot.size()-1).contains("what is your name?"))
-				{
-					String splitString[]=input.split(" ");
-					answered=setName(nomen, splitString);
+
+		if (userName.equals("user")) {
+
+			if (input.toLowerCase().contains("my name is")) {
+				String ana = input.substring(input.toLowerCase().indexOf("my name is ") + 11);
+				String splitString[] = ana.split(" ");
+
+				answered = setName(nomen, splitString);
+			} else if (input.toLowerCase().contains("iam")) {
+				String ana = input.substring(input.toLowerCase().indexOf("iam ") + 4);
+				String splitString[] = ana.split(" ");
+
+				answered = setName(nomen, splitString);
+			} else if (input.toLowerCase().contains("call me")) {
+				String ana = input.substring(input.toLowerCase().indexOf("call me ") + 8);
+				String splitString[] = ana.split(" ");
+
+				answered = setName(nomen, splitString);
+			} else if (robot.size() > 0) {
+				if (robot.get(robot.size() - 1).contains("what is your name?")) {
+					String splitString[] = input.split(" ");
+					answered = setName(nomen, splitString);
 				}
 			}
-				
+
 		}
 
 		if (developer)
-			addRespond("stopped: "+stopped+"</br>QuestionIndicator:  -TAG: " + questionTag + "   -?: " + questionMark + "  Negation?: "
-					+ negation + "  Respond: " + respondValue, 2);
+			addRespond("stopped: " + stopped + "</br>QuestionIndicator:  -TAG: " + questionTag + "   -?: "
+					+ questionMark + "  Negation?: " + negation + "  Respond: " + respondValue, 2);
 
-		if(!answered)
-		{
-		try {
-			if((input.split(" ")).length<3)
-				addRespond("This is a very short request?</br>.... let's see whether I find something",0);
-			
-			ConversationBlock block = SearchInIndex.searchWithNN(input);
-			conversationList.add(block);
-			String textAnswer = block.getCurrent().getContent();
+		if (!answered) {
+			try {
+				if ((input.split(" ")).length < 3)
+					addRespond("This is a very short request?.... let's see whether I find something</br>", 0);
 
-			addRespond(textAnswer, 0);
+				// artificial sleeping of programm
 
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			
-			addRespond("Sorry, I could not find anything...",0);
-		}
+				ConversationBlock block = SearchInIndex.searchWithNN(input);
+				conversationList.add(block);
+				String textAnswer = block.getCurrent().getContent();
+
+				botResponse(textAnswer, 800);
+
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+
+				botResponse("Sorry, I could not find anything about his. What do you mean?", 800);
+
+			}
 		}
 	}
 
 	private boolean setName(List<String> nomen, String[] splitString) {
-		boolean nn=false;
-		for(String current: nomen)
-		{
-			if(current.equals(splitString[0]))
-				nn=true;
+		boolean nn = false;
+		for (String current : nomen) {
+			if (current.equals(splitString[0]))
+				nn = true;
 		}
-		if(nn)
-		{
-			userName=splitString[0];
-			
-			addRespond("Hello "+userName,0);
-			
+		if (nn) {
+			userName = splitString[0];
+
+			botResponse("Hello " + userName + "!", 100);
+
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -311,8 +341,6 @@ public class ChatBotInterface extends Application {
 				String word = token.get(TextAnnotation.class);
 				// // this is the POS tag of the token
 				String pos = token.get(PartOfSpeechAnnotation.class);
-				// // this is the NER label of the token
-				String ne = token.get(NamedEntityTagAnnotation.class);
 
 				returnString += " <font color=\"" + Indexer.getColorFromPosTag(pos) + "\">" + word + "_" + pos
 						+ "</font>";
@@ -323,6 +351,27 @@ public class ChatBotInterface extends Application {
 
 		returnString += "</br>";
 		return returnString;
+	}
+
+	public void botResponse(String content, int time) {
+		Task<Void> sleeper = new Task<Void>() {
+			@Override
+			protected Void call() throws Exception {
+				try {
+					Thread.sleep(time);
+				} catch (InterruptedException e) {
+				}
+				return null;
+			}
+		};
+		sleeper.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+			@Override
+			public void handle(WorkerStateEvent event) {
+
+				addRespond(content, 0);
+			}
+		});
+		new Thread(sleeper).start();
 	}
 
 	/**

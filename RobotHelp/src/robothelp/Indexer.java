@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.synonym.SynonymMap.Parser;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.IntPoint;
@@ -30,6 +31,10 @@ import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.IndexableField;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
@@ -41,7 +46,6 @@ import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
 import edu.stanford.nlp.util.CoreMap;
 
-
 public class Indexer {
 	// FIELD NAMES:
 	public static final String COUNTRY = "country";
@@ -50,12 +54,13 @@ public class Indexer {
 	public static final String LENGTH_STORE = "lengthstore";
 	public static final String TOPIC = "topic";
 	public static final String POS = "pos";
-	
-	public static final String ID = "id";
-	public static final String CAPTION ="caption";
-	public static final String KEYS ="keys";
-	public static final String REFS = "ref";
 
+	public static final String ID = "id";
+	public static final String IDfield = "idfield";
+	public static final String CAPTION = "caption";
+	public static final String KEYS = "keys";
+	public static final String REFS = "ref";
+	public static final String FEEDBACK = "feedback";
 
 	private static final String[] POSTAGS3 = { "PDT", "POS", "PRP", "SYM" };
 
@@ -159,6 +164,52 @@ public class Indexer {
 		writer.close();
 	}
 
+	public void updateDocument() {
+/*
+		TextField feedbackField = new TextField(FEEDBACK, doc.get(Indexer.FEEDBACK) + " " + toAddToQuestions,
+				Field.Store.YES);
+		List<IndexableField> fields = doc.getFields();
+		System.out.println(doc.get(Indexer.CAPTION)+" "+doc.get(Indexer.FEEDBACK) + " " + toAddToQuestions);
+		*/
+		//doc.removeField(Indexer.FEEDBACK);
+		
+	/*	System.out.println("removed!");
+		
+		for(IndexableField current:fields)
+		{
+			if(current.name().equals(Indexer.FEEDBACK))
+			{
+				System.out.println(current.name());
+
+			}
+		}*/
+		//doc.add(feedbackField);
+		try {
+			//writer.updateDoc(new Term(Indexer.CAPTION,doc.get(Indexer.CAPTION)), doc);
+			//writer.updateDocValues(new Term(Indexer.CAPTION,doc.get(Indexer.CAPTION)), feedbackField);
+			//String f[] = { Indexer.ID, Indexer.IDfield,Indexer.CAPTION, Indexer.CONTENT, Indexer.KEYS, Indexer.REFS, Indexer.FEEDBACK };
+			//MultiFieldQueryParser parser = new MultiFieldQueryParser(f, new NoStemmingAnalyzer());
+			writer.deleteAll();
+			addHelp(ReadHelpFile.HelpFile.mainStructure);
+			//writer.deleteDocuments(new Term(Indexer.CAPTION,doc.get(Indexer.CAPTION)));
+			//			writer.deleteDocuments(new Term(Indexer.CAPTION,doc.get(Indexer.CAPTION)));
+			
+/*			this.close();
+			
+			Directory dir = FSDirectory.open(new File(indexDir).toPath());
+
+			IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
+
+			writer = new IndexWriter(dir, iwc);
+			
+			writer.addDocument(doc);*/
+			//writer.updateDocument(doc.get(Indexer.CAPTION), doc);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	}
+
 	/**
 	 * Index sentences into certain category/country and topic
 	 * 
@@ -240,163 +291,55 @@ public class Indexer {
 
 		return countMap;
 	}
-	
-	
+
 	public void addHelp(List<ContentBlock> content) {
 
-
-		
 		System.out.println("StartIndexing");
 
-		StringField idField = new StringField(ID, "", Field.Store.YES);
-		TextField captionField = new TextField(CAPTION,"" , Field.Store.YES);
+		TextField captionField = new TextField(CAPTION, "", Field.Store.YES);
 		TextField contentField = new TextField(CONTENT, "", Field.Store.YES);
 		TextField keyField = new TextField(KEYS, "", Field.Store.YES);
 		TextField refsField = new TextField(REFS, "", Field.Store.YES);
-		
+		TextField feedbackField = new TextField(FEEDBACK, " ", Field.Store.YES);
+
 		for (ContentBlock entry : content) {
 			Document doc = new Document();
 
-
-				contentField.setStringValue(entry.getContent());
-				captionField.setStringValue(entry.getCaption());
-				idField.setStringValue(""+entry.getId());
-				doc.add(idField);
-
-				doc.add(captionField);
-				doc.add(contentField);
-				
-				String keys="";
-				for(String key:entry.getKeys())
-				keys=keys+" "+key;
-				keyField.setStringValue(keys);
-				doc.add(keyField);
-				
-
-				String refs="";
-				if(entry.getRef()!=null)
-				{
-				for(int ref:entry.getRef())
-				refs=refs+" "+ref;
-				}
-				refsField.setStringValue(refs);
-				doc.add(refsField);
+			contentField.setStringValue(entry.getContent());
+			captionField.setStringValue(entry.getCaption());
+			
+			
+			doc.add(new IntPoint(ID, entry.getId()));
+			doc.add(new StoredField(IDfield, entry.getId()));
 
 
+			doc.add(captionField);
+			doc.add(contentField);
 
-				try {
-					writer.addDocument(doc);
-				} catch (IOException e) {
-					System.out.println("catch");
-					e.printStackTrace();
-				}
+			String keys = "";
+			for (String key : entry.getKeys())
+				keys = keys + " " + key;
+			keyField.setStringValue(keys);
+			doc.add(keyField);
 
-			} 
-		}
-
-
-	/**
-	 * Saves metainformation of a certain language/category
-	 * 
-	 * @param language
-	 *            - language/category
-	 * @param countMap
-	 *            - a Map representing the number of certain sentence-lengths
-	 *            "[5]=20" - 5 sentences with token-length 5
-	 */
-
-	public void saveMetaInformation(String language, Map<Integer, Integer> countMap) {
-
-		// create a new file with an ObjectOutputStream
-		try (ObjectOutputStream oout = new ObjectOutputStream(new FileOutputStream(indexDir + "\\" + language))) {
-
-			// write something in the file
-			oout.writeObject(countMap);
-			System.out.println(language + " size: " + countMap.size());
-			// close the stream
-			oout.close();
-
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-
-	}
-
-	/**
-	 * Reads metainformation of a certain language/category
-	 * 
-	 * @param indexDir
-	 *            - path to index
-	 * @param language
-	 *            - name of language (->inducts path of language)
-	 * @return a Map representing the number of certain sentence-lengths
-	 *         "[5]=20" - 5 sentences with token-length 5
-	 */
-	public static Map<Integer, Integer> readMetaInformation(String indexDir, String language) {
-		Map<Integer, Integer> countMap = null;
-
-		String languageKey = language;
-		if (language.contains("language")) // special case, because of early
-											// indexing
-			languageKey = language.substring(0, language.indexOf("language"));
-		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(indexDir + "\\" + languageKey))) {
-			// read and print what we wrote before
-			countMap = (Map<Integer, Integer>) ois.readObject();
-		} catch (ClassNotFoundException ignore) {
-			ignore.printStackTrace();
-		} catch (IOException ignore) {
-		}
-		return countMap;
-	}
-
-	/**
-	 * Returns list of languages/categories
-	 * 
-	 * @param indexDir
-	 *            - path to index
-	 * @return List of language/category-keys
-	 */
-	public static List<String> getIndexInformation(String indexDir) {
-		List<String> meta = new LinkedList<String>();
-		List<String> lines = null;
-		try {
-			lines = Files.readAllLines(Paths.get(indexDir + "\\METAINFORMATION"));
-
-			for (String line : lines) {
-				String[] parts = line.split(" ");
-				if (parts.length == 2) {
-					meta.add(parts[1]);
-				}
+			String refs = "";
+			if (entry.getRef() != null) {
+				for (int ref : entry.getRef())
+					refs = refs + " " + ref;
 			}
-		} catch (IOException ignore) {
+			refsField.setStringValue(refs);
+			doc.add(refsField);
 
-		}
-		return meta;
-	}
+			feedbackField.setStringValue(entry.getOldQuestions());
+			doc.add(feedbackField);
 
-	/**
-	 * Saves Indexinformations (which kind of languages/categories) exist
-	 * 
-	 * @param indexDir
-	 *            - path to index
-	 * @param languageKey
-	 *            - key of language
-	 * @param language
-	 *            - transformation e.g. key= EN transformation=English (not
-	 *            implemented for the integrated indexer)
-	 */
-	public void saveIndexInformation(String indexDir, String[] languageKey, String[] language) {
-		List<String> meta = getIndexInformation(indexDir);
-		if (!meta.contains(language) && languageKey.length == language.length) {
-			try (BufferedWriter output = new BufferedWriter(new FileWriter(indexDir + "\\METAINFORMATION", true))) {
-				for (int i = 0; i < languageKey.length; i++) {
-					output.write(languageKey[i] + " " + language[i] + System.lineSeparator());
-				}
-				output.close();
-
+			try {
+				writer.addDocument(doc);
 			} catch (IOException e) {
-
+				System.out.println("catch");
+				e.printStackTrace();
 			}
+
 		}
 	}
 
@@ -547,22 +490,21 @@ public class Indexer {
 		String input = "";
 		while (!input.equals("close")) {
 			input = in.nextLine();
-			
+
 			edu.stanford.nlp.pipeline.Annotation document = SentenceParser.makeAnnotation(input);
 			List<CoreMap> returnMap = SentenceParser.returnSentences(document);
 
 			for (CoreMap current : returnMap) {
 
-				boolean questionMark=false;
-				boolean auxVerbBefore=false;
-				int positionAuxVerb=150;
-				//https://www.englishclub.com/grammar/verbs-questions_structure.htm
-				if(current.toString().contains("?"))
-				questionMark=true;
-				
+				boolean questionMark = false;
+				boolean auxVerbBefore = false;
+				int positionAuxVerb = 150;
+				// https://www.englishclub.com/grammar/verbs-questions_structure.htm
+				if (current.toString().contains("?"))
+					questionMark = true;
+
 				System.out.println("sentence: " + current.toString());
 				System.out.print("TAGS:");
-				
 
 				for (CoreLabel token : current.get(TokensAnnotation.class)) {
 					// this is the text of the token
@@ -571,21 +513,20 @@ public class Indexer {
 					System.out.print(word + "_" + pos + "  ");
 
 				}
-				
-				List<Tree> tree=SentenceParser.getParseTree(document);
-				for(Tree currentTree:tree)
-				{
-					System.out.print(currentTree.toString()+"  ");
+
+				List<Tree> tree = SentenceParser.getParseTree(document);
+				for (Tree currentTree : tree) {
+					System.out.print(currentTree.toString() + "  ");
 				}
-				
-				auxVerbBefore=SentenceParser.auxVerb(document,current.toString());
-					
-				System.out.println("Questionmark: "+questionMark+" (AuxVerb) "+auxVerbBefore);
-			
+
+				auxVerbBefore = SentenceParser.auxVerb(document, current.toString());
+
+				System.out.println("Questionmark: " + questionMark + " (AuxVerb) " + auxVerbBefore);
+
 			}
-			
+
 		}
-		
+
 		in.close();
 	}
 

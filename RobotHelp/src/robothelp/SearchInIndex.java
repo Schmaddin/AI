@@ -61,8 +61,19 @@ public class SearchInIndex {
 		}
 		is = new IndexSearcher(reader);
 		analyzer = new PorterStemmingAnalyzer();
-		String fields[] = { Indexer.ID, Indexer.CAPTION, Indexer.CONTENT, Indexer.KEYS, Indexer.REFS };
+		String fields[] = { Indexer.ID, Indexer.IDfield,Indexer.CAPTION, Indexer.CONTENT, Indexer.KEYS, Indexer.REFS, Indexer.FEEDBACK };
 		parser = new MultiFieldQueryParser(fields, analyzer);
+	}
+	
+	public static void close()
+	{
+		try {
+			if(reader!=null)
+			reader.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -125,6 +136,35 @@ public class SearchInIndex {
 		return returnString;
 
 	}
+	
+	public static Document searchDocument(String caption)
+	{
+
+		TopDocs hitsTotal;
+		try {
+			hitsTotal = is.search(parser.parse("caption:" + caption),1000);
+			
+			
+		
+		System.out.println("hits: " + hitsTotal.totalHits);
+		
+		for(ScoreDoc scoreDocs:hitsTotal.scoreDocs)
+		{
+			Document document = is.doc(scoreDocs.doc);
+		//if(document.get(Indexer.ID).equals(id))
+		return document;
+		}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
+		
+	}
 
 	public static ConversationBlock searchWithNN(String queryString) throws Exception {
 		List<String> nomen = SentenceParser.returnNN(queryString);
@@ -143,7 +183,7 @@ public class SearchInIndex {
 		Query query;
 		if(searchWithNN)
 		query = parser
-				.parse("content:" + queryString + " OR " + "topic:" + queryString + " OR keys:" + queryString + " OR content:"+nomenComplet+" OR keys:"+nomenComplet+" OR topic: "+nomenComplet); // 4
+				.parse("content:" + queryString + " OR " + "topic:" + queryString + " OR keys:" + queryString + " OR feedback: "+queryString+" OR content:"+nomenComplet+" OR keys:"+nomenComplet+" OR topic: "+nomenComplet+" OR feedback:"+nomenComplet); // 4
 		else
 			query = parser
 			.parse("content:" + queryString + " OR " + "topic:" + queryString + " OR keys:" + queryString); // 4
@@ -196,7 +236,8 @@ public class SearchInIndex {
 
 		List<ContentBlock> allblocks=ReadHelpFile.HelpFile.mainStructure;
 		
-		String id=doc.get(Indexer.ID);
+		String id=doc.get(Indexer.IDfield);
+		System.out.println(id);
 		
 		for(ContentBlock current: allblocks)
 		{
@@ -207,8 +248,8 @@ public class SearchInIndex {
 	}
 	
 	public static String removeStopWords(String textFile) throws Exception {
-	    CharArraySet stopWords = EnglishAnalyzer.getDefaultStopSet();
-	    CharArraySet extendedStopWords = stopWords.copy(stopWords);
+	    org.apache.lucene.analysis.CharArraySet stopWords = EnglishAnalyzer.getDefaultStopSet();
+	    org.apache.lucene.analysis.CharArraySet extendedStopWords = stopWords.copy(stopWords);
 	    extendedStopWords.add("so");
 	    extendedStopWords.add("you");
 	    extendedStopWords.add("can");

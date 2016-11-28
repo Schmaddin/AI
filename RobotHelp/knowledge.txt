@@ -1,5 +1,5 @@
 ﻿/////topic: 1
-///keys: baggage allowance, items
+///keys: baggage allowance, items, not bring
 ///title: Which items are not considered part of the baggage allowance?
 ///answer: The items not considered part of the baggage allowance are: electronic devices, cash, jewelry or gemstones, negotiable papers, and items that can be considered valuable, mobile phones, laptops, iPods, personal items such as glasses, make up, etc.
 ///related topic: 2,3,4
@@ -65,7 +65,7 @@
 ///related topic:
 
 /////topic: 12
-///keys: pet, animal, cabin, checked, cargo
+///keys: pet, animal, cabin, checked, cargo, pets, animals
 ///title: Can my pet fly with me?
 ///answer: There are three options to transport your pet with you:</br>In cabin: Bring your pet onboard for travel within Mexico and to/from the USA, Canada, and Central and South America, for a special fee;</br>Checked: Check in your pet to be transported in the cargo hold, if your dog, cat, or chicken weigh less than 100 lb (45 kg), including the weight of the carrier, for a special fee; </br>As cargo: If your pet weighs more than 100 lb (45 kg) including the weight of its carrier, or if you wish to ship another type of animal, please call our Cargo Department toll free at 1 (800) 368-4226 for more information.
 ///related topic:
